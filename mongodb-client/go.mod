@@ -1,4 +1,4 @@
-module mongodb_client
+module github.com/mariajz/go-utils/mongodb-client
 
 go 1.20
 
