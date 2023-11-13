@@ -14,7 +14,7 @@ import (
 
 var DBClient *mongo.Client
 
-func InitDB() {
+func init() {
 	clientOptions := options.Client().ApplyURI(os.Getenv("MONGO_URL"))
 	var err error
 	DBClient, err = mongo.Connect(context.Background(), clientOptions)
