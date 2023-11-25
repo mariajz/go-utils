@@ -7,8 +7,11 @@ import (
 	"log"
 	"math/rand"
 	"net/http"
+	"strings"
+	"time"
 
 	"github.com/gin-gonic/gin"
+	"github.com/google/uuid"
 	"github.com/opentracing/opentracing-go"
 	"github.com/opentracing/opentracing-go/ext"
 	tracerlog "github.com/opentracing/opentracing-go/log"
@@ -186,4 +189,19 @@ func EndSpan(c *gin.Context, err error) {
 	span.SetTag("error", false)
 	span.LogFields(tracerlog.Event("Success"))
 	return
+}
+
+func MiddleWare() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		traceID := c.Request.Header.Get("X-B3-TraceId")
+		if traceID == "" {
+			traceID = strings.ReplaceAll(uuid.New().String(), "-", "")[16:]
+			c.Request.Header.Set("X-B3-TraceId", traceID)
+		}
+		currentTime := time.Now().UTC()
+		dateString := currentTime.Format(http.TimeFormat)
+		c.Header("Date", dateString)
+		c.Header("X-B3-TraceId", traceID)
+		c.Next()
+	}
 }
