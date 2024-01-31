@@ -4,13 +4,12 @@ import (
 	"fmt"
 	"log"
 
+	"github.com/jmoiron/sqlx"
 	_ "github.com/lib/pq"
 	"github.com/mariajz/go-utils/postgres-client/model"
-	"gorm.io/driver/postgres"
-	"gorm.io/gorm"
 )
 
-var DB *gorm.DB
+var DB *sqlx.DB
 
 func InitPostgresDB(config model.Config) {
 	dsn := fmt.Sprintf("host=%s port=%d user=%s password=%s dbname=%s sslmode=disable",
@@ -21,16 +20,14 @@ func InitPostgresDB(config model.Config) {
 		config.DBName)
 
 	var err error
-	DB, err = gorm.Open(postgres.Open(dsn), &gorm.Config{})
+	DB, err = sqlx.Open("postgres", dsn)
+
 	if err != nil {
 		fmt.Println("error in opening db connection:", err)
 		panic(err)
 	}
-	sqlDB, err := DB.DB()
-	if err != nil {
-		fmt.Println("error in conversion:", err)
-	}
-	err = sqlDB.Ping()
+
+	err = DB.Ping()
 	if err != nil {
 		fmt.Println("error in ping:", err)
 		panic(err)
