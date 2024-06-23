@@ -5,4 +5,5 @@ use (
 	./mongodb-client
 	./mongodb-client-v2
 	./postgres-client
+	./inject
 )
