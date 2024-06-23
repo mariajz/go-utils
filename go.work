@@ -3,5 +3,6 @@ go 1.20
 use (
 	./jaeger-client
 	./mongodb-client
+	./mongodb-client-v2
 	./postgres-client
 )
